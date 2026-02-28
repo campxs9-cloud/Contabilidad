@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>La Postal - Registro Contable Pro</title>
+
+    <style>
+
+        :root {
+
+            --bg-color: #f1f3f6;
+
+            --card-bg: #ffffff;
+
+            --text-main: #0a0a0a;
+
+            --text-secondary: #5e6472;
+
+            --accent: #2563eb;
+
+            --danger: #dc2626;
+
+            --border: #e2e8f0;
+
+            --font-family: 'Inter', -apple-system, system-ui, sans-serif;
+
+            --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+        }
+
+        body {
+
+            font-family: var(--font-family);
+
+            background-color: var(--bg-color);
+
+            color: var(--text-main);
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            min-height: 100vh;
+
+            margin: 0;
+
+            -webkit-font-smoothing: antialiased;
+
+        }
+
+        /* Header Optimizado (Menos ancho) */
+
+        .header-top {
+
+            width: 100%;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 15px 24px; /* Reducido de 30px 40px */
+
+            box-sizing: border-box;
+
+            max-width: 1000px;
+
+        }
+
+        .header-logo { font-size: 0.9rem; letter-spacing: -0.02em; }
+
+        .brand-main { font-weight: 700; display: block; }
+
+        .brand-sub {
+
+            font-weight: 400;
+
+            color: var(--text-secondary);
+
+            font-size: 0.7rem;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.12em;
+
+        }
+
+        .user-icon {
+
+            width: 28px; height: 28px;
+
+            background: #e1e7f0; border-radius: 50%;
+
+            display: flex; align-items: center; justify-content: center;
+
+            color: var(--text-secondary);
+
+        }
+
+        /* Container */
+
+        .container { 
+
+            width: 100%; 
+
+            max-width: 440px; 
+
+            padding: 10px 20px 60px 20px; /* Reducido padding superior */
+
+            flex-grow: 1; 
+
+        }
+
+        .main-card {
+
+            background: var(--card-bg); border-radius: 28px;
+
+            padding: 35px; box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+
+            border: 1px solid rgba(0,0,0,0.01);
+
+        }
+
+        .balance-section {
+
+            text-align: center; margin-bottom: 40px; padding: 25px;
+
+            background: #f8fafc; border-radius: 20px; border: 1px solid var(--border);
+
+        }
+
+        .balance-label {
+
+            font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+
+            letter-spacing: 0.1em; color: var(--text-secondary); margin-bottom: 8px; display: block;
+
+        }
+
+        .balance-amount { font-size: 3.2rem; font-weight: 700; letter-spacing: -0.05em; margin: 0; }
+
+        /* Input */
+
+        .field-container {
+
+            background: #fafafa; border-radius: 18px; padding: 10px 20px;
+
+            border: 2px solid #eee; display: flex; align-items: center; transition: var(--transition-smooth);
+
+        }
+
+        .field-container:focus-within { border-color: var(--text-main); background: #fff; }
+
+        .prefix { font-size: 1.8rem; font-weight: 500; color: #b0b0b0; margin-right: 12px; }
+
+        input#amountInput {
+
+            width: 100%; border: none; background: transparent; font-size: 2rem;
+
+            font-weight: 600; outline: none; padding: 10px 0; color: var(--text-main);
+
+        }
+
+        button#addBtn {
+
+            width: 100%; background: var(--text-main); color: #fff; border: none;
+
+            padding: 18px; border-radius: 16px; font-size: 0.95rem; font-weight: 600;
+
+            margin-top: 15px; cursor: pointer; transition: var(--transition-smooth);
+
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+
+        }
+
+        button#addBtn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+
+        /* Historial */
+
+        .history-section h3 {
+
+            font-size: 0.8rem; font-weight: 700; color: var(--text-secondary);
+
+            text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 20px;
+
+            border-bottom: 2px solid #eee; padding-bottom: 10px;
+
+        }
+
+        ul { list-style: none; padding: 0; }
+
+        li {
+
+            display: flex; justify-content: space-between; align-items: center;
+
+            padding: 15px; background: #fbfbfb; border-radius: 12px;
+
+            margin-bottom: 8px; border: 1px solid #f0f0f0;
+
+            animation: fadeIn 0.4s ease-out forwards;
+
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .item-info { display: flex; align-items: center; gap: 12px; }
+
+        .card-icon {
+
+            width: 32px; height: 32px; background: #e9ecef; border-radius: 8px;
+
+            display: flex; align-items: center; justify-content: center; color: var(--text-secondary);
+
+        }
+
+        .item-val { font-size: 1.05rem; font-weight: 600; }
+
+        .action-link {
+
+            font-size: 0.8rem; font-weight: 600; background: none; border: none;
+
+            cursor: pointer; padding: 5px; margin-left: 8px;
+
+        }
+
+        .edit-link { color: var(--accent); }
+
+        .delete-link { color: var(--danger); }
+
+        .clear-btn {
+
+            width: 100%; margin-top: 25px; background: none; border: none;
+
+            color: var(--text-secondary); font-size: 0.75rem; text-decoration: underline; cursor: pointer;
+
+        }
+
+        /* Footer */
+
+        footer {
+
+            width: 100%; background-color: #f8fafc; border-top: 1px solid var(--border);
+
+            padding: 40px 24px; text-align: center; margin-top: auto; box-sizing: border-box;
+
+        }
+
+        .footer-content { max-width: 400px; margin: 0 auto; }
+
+        .legal-links { display: flex; justify-content: center; gap: 15px; margin-bottom: 20px; }
+
+        .legal-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.75rem; font-weight: 600; }
+
+        .copyright { font-size: 0.7rem; color: #8a8a8a; line-height: 1.6; }
+
+        .security-badge {
+
+            display: inline-flex; align-items: center; gap: 6px;
+
+            margin-top: 15px; padding: 5px 12px; background: #fff;
+
+            border: 1px solid var(--border); border-radius: 20px;
+
+            font-size: 0.65rem; color: #047857; font-weight: 700;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header class="header-top">
+
+    <div class="header-logo">
+
+        <span class="brand-main">La Postal</span>
+
+        <span class="brand-sub">Teriyaki & Sushi</span>
+
+    </div>
+
+    <div class="user-icon">
+
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+
+    </div>
+
+</header>
+
+<main class="container">
+
+    <div class="main-card">
+
+        <div class="balance-section">
+
+            <span class="balance-label">Total de venta</span>
+
+            <h1 class="balance-amount" id="displayTotal">$ 0</h1>
+
+        </div>
+
+        
+
+        <div class="input-area">
+
+            <div class="field-container">
+
+                <span class="prefix">$</span>
+
+                <input type="text" id="amountInput" inputmode="decimal" placeholder="0" autocomplete="off" autofocus>
+
+            </div>
+
+            <button id="addBtn">Registrar monto</button>
+
+        </div>
+
+        <div class="history-section">
+
+            <h3>Historial</h3>
+
+            <ul id="historyList"></ul>
+
+            <button id="clearAllBtn" class="clear-btn" style="display:none;">Limpiar historial</button>
+
+        </div>
+
+    </div>
+
+</main>
+
+<footer>
+
+    <div class="footer-content">
+
+        <div class="legal-links">
+
+            <a href="#">Términos</a>
+
+            <a href="#">Privacidad</a>
+
+            <a href="#">Cumplimiento</a>
+
+            <a href="#">Ayuda</a>
+
+        </div>
+
+        <div class="copyright">
+
+            Copyright © 2026 La Postal Teriyaki & Sushi.<br>
+
+            Todos los derechos reservados. Sistema exclusivo de uso interno.
+
+        </div>
+
+        <div class="security-badge">
+
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/></svg>
+
+            Encriptación de Nivel Bancario SSL
+
+        </div>
+
+    </div>
+
+</footer>
+
+<script>
+
+    const amountInput = document.getElementById('amountInput');
+
+    const addBtn = document.getElementById('addBtn');
+
+    const historyList = document.getElementById('historyList');
+
+    const displayTotal = document.getElementById('displayTotal');
+
+    const clearAllBtn = document.getElementById('clearAllBtn');
+
+    let records = [];
+
+    const cardIconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>`;
+
+    amountInput.addEventListener('input', (e) => {
+
+        let val = e.target.value.replace(/\D/g, "");
+
+        e.target.value = val ? new Intl.NumberFormat('en-US').format(val) : "";
+
+    });
+
+    function updateTotal() {
+
+        const total = records.reduce((sum, val) => sum + val, 0);
+
+        displayTotal.innerText = `$ ${new Intl.NumberFormat('en-US').format(total)}`;
+
+    }
+
+    function addRecord() {
+
+        const rawValue = amountInput.value.replace(/,/g, "");
+
+        if (rawValue === "") return;
+
+        records.push(parseInt(rawValue));
+
+        renderList();
+
+        updateTotal();
+
+        amountInput.value = "";
+
+        amountInput.focus();
+
+    }
+
+    window.deleteRecord = function(index) {
+
+        records.splice(index, 1);
+
+        renderList();
+
+        updateTotal();
+
+    };
+
+    window.editRecord = function(index) {
+
+        const newValue = prompt("Modificar cantidad:", records[index]);
+
+        if (newValue !== null && newValue.trim() !== "") {
+
+            const cleanValue = parseInt(newValue.replace(/\D/g, ""));
+
+            if (!isNaN(cleanValue)) {
+
+                records[index] = cleanValue;
+
+                renderList();
+
+                updateTotal();
+
+            }
+
+        }
+
+    };
+
+    function renderList() {
+
+        historyList.innerHTML = "";
+
+        for (let i = records.length - 1; i >= 0; i--) {
+
+            const val = records[i];
+
+            const li = document.createElement('li');
+
+            li.innerHTML = `
+
+                <div class="item-info">
+
+                    <div class="card-icon">${cardIconSvg}</div>
+
+                    <span class="item-val">$ ${new Intl.NumberFormat('en-US').format(val)}</span>
+
+                </div>
+
+                <div>
+
+                    <button class="action-link edit-link" onclick="editRecord(${i})">Editar</button>
+
+                    <button class="action-link delete-link" onclick="deleteRecord(${i})">Quitar</button>
+
+                </div>`;
+
+            historyList.appendChild(li);
+
+        }
+
+        clearAllBtn.style.display = records.length > 0 ? "block" : "none";
+
+    }
+
+    addBtn.addEventListener('click', addRecord);
+
+    clearAllBtn.addEventListener('click', () => {
+
+        if(confirm("¿Estás seguro de eliminar todo el historial?")) { records = []; renderList(); updateTotal(); }
+
+    });
+
+    amountInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') addRecord(); });
+
+</script>
+
+</body>
+
+</html>
